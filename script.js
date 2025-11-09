@@ -39,5 +39,24 @@ function solicitarDatosUsuario() {
 
 
 
+// Función 2: Elegir tipo de filtro
+
+function elegirTipoFiltro() {
+    
+    let opcion = prompt("¿Cómo querés buscar recetas?\n 1. Por tiempo disponible\n 2. Por ingredientes que tenés");
+    opcion = +opcion;
+    
+    if (opcion === 1) {
+        return filtrarPorTiempo();
+    } else if (opcion === 2) {
+        return filtrarPorIngredientes();
+    } else {
+        console.log("Opción inválida. Mostrando todas las recetas.");
+        return recetas;
+    }
+}
+
+
 
 solicitarDatosUsuario();
+elegirTipoFiltro();
