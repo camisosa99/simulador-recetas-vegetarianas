@@ -182,7 +182,7 @@ function mostrarResumen() {
     }
 }
 
-//
+
 solicitarDatosUsuario();
 let recetasDisponibles = elegirTipoFiltro();
 seleccionarRecetas(recetasDisponibles);
