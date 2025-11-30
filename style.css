@@ -10,6 +10,8 @@ body {
     padding: 20px;
 }
 header {
+    text-align: center;
+    padding: 40px 30px 30px 30px;
     background-color: hsl(30, 18%, 87%)
 }
 
