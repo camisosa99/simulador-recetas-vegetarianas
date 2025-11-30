@@ -5,12 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulador de Recetas Vegetarianas</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Epunda+Sans:ital,wght@0,300..900;1,300..900&family=Karla:ital,wght@0,200..800;1,200..800&family=Libertinus+Keyboard&family=Mozilla+Text:wght@200..700&family=Nata+Sans:wght@100..900&family=Outfit:wght@100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Syne:wght@400..800&family=Young+Serif&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
             <h1>Simulador de Recetas Vegetarianas</h1>
             <p>Encontrá las recetas perfectas para vos</p>
         </header>
+
+        <div class="bienvenida" id="seccionBienvenida">
+            <h2>¡Bienvenido/a, <span id="nombreUsuario"></span>!</h2>
+            <p>Elegí cómo querés buscar tus recetas</p>
+        </div>
+
+        <!-- Botones de filtrado -->
+        <div class="filtros">
+            <button id="btnFiltrarTiempo">⏱️ Filtrar por Tiempo</button>
+            <button id="btnFiltrarIngrediente">🥬 Filtrar por Ingrediente</button>
+            <button id="btnMostrarTodas">📋 Mostrar Todas</button>
+        </div>
+
+        <!-- Sección de recetas disponibles -->
+        <div class="seccion">
+            <h2>Recetas Disponibles</h2>
+            <div id="recetasDisponibles" class="recetas-disponibles">
+                <!-- Aca se van a mostrar las recetas con JavaScript -->
+            </div>
+        </div>
+
+        <!-- Sección de recetas seleccionadas -->
+        <div class="seccion">
+            <h2>Mis Recetas Seleccionadas</h2>
+            <div class="recetas-seleccionadas">
+                <ul id="listaSeleccionadas" class="lista-seleccionadas">
+                    <!-- Aquí se van a mostrar las recetas seleccionadas -->
+                </ul>
+                <div id="mensajeVacio" class="mensaje-vacio">
+                    No has seleccionado ninguna receta todavía 🍽️
+                </div>
+                <button id="btnLimpiarSeleccion" class="btn-limpiar oculto">
+                    🗑️ Limpiar Selección
+                </button>
+            </div>
+        </div>
+    </div>
     
     <script src="script.js"></script>
 </body>
