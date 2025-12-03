@@ -15,8 +15,8 @@ const recetas = [
         vegano: false 
     },
     { 
-        nombre: "Tacos de garbanzos", 
-        tiempo: 20, 
+        nombre: "Hummus de garbanzos", 
+        tiempo: 15, 
         ingredientes: ["garbanzos", "tortillas", "lechuga", "tomate"],
         dificultad: "Fácil", 
         vegano: true 

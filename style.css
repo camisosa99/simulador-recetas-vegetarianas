@@ -11,11 +11,32 @@ body {
 }
 header {
     text-align: center;
-    padding: 40px 30px 30px 30px;
-    background-color: hsl(30, 18%, 87%)
+    padding: 130px 20px;
+    background-image: url(assets/fondo-header1.jpg);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Efecto parallax */
+    min-height: 300px;
+    position: relative;
+    font-size: 20px;
+}
+
+header h1, 
+header p {
+    color: white;
+    
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+    text-shadow: 0 0 10px black, 0 0 20px black;
 }
 
 h1, h2, h3 {
     font-family: 'Young Serif', serif; /* Fuente para títulos */
-    color: hsl(14, 45%, 36%);
+    color: #854632;
 }
+
+.bienvenida {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: #e4ded8;
+}
+
