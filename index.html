@@ -5,63 +5,131 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulador de Recetas Vegetarianas</title>
     <link rel="stylesheet" href="style.css">
+    
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css">
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Epunda+Sans:ital,wght@0,300..900;1,300..900&family=Karla:ital,wght@0,200..800;1,200..800&family=Libertinus+Keyboard&family=Mozilla+Text:wght@200..700&family=Nata+Sans:wght@100..900&family=Outfit:wght@100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Syne:wght@400..800&family=Young+Serif&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Young+Serif&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
-            <h1>Simulador de Recetas Vegetarianas</h1>
-            <p>Encontrá las recetas perfectas para vos</p>
-        </header>
+        <h1>Simulador de Recetas Vegetarianas</h1>
+        <p>Encontrá las recetas perfectas para vos</p>
+    </header>
 
-        <div class="bienvenida" id="seccionBienvenida">
-            <h2>¡Bienvenido/a, <span id="nombreUsuario"></span>!</h2>
+    <!-- Sección de bienvenida -->
+    <div class="bienvenida" id="seccionBienvenida">
+        <h2>¡Bienvenido/a!</h2>
+        <div class="form-nombre">
+            <input 
+                type="text" 
+                id="inputNombre" 
+                placeholder="Ingresá tu nombre"
+                class="input-nombre">
+            <button id="btnGuardarNombre" class="btn-guardar">Comenzar</button>
+        </div>
+        <div id="saludoUsuario" class="oculto">
+            <h2>¡Hola, <span id="nombreUsuario"></span>!</h2>
             <p>Elegí cómo querés buscar tus recetas</p>
         </div>
+    </div>
 
-        <!-- Botones de filtrado -->
-        <div class="filtros">
-            <button id="btnFiltrarTiempo">⏱️ Filtrar por Tiempo</button>
-            <button id="btnFiltrarIngrediente">🥬 Filtrar por Ingrediente</button>
-            <button id="btnMostrarTodas">📋 Mostrar Todas</button>
-        </div>
+    <!-- Loader -->
+    <div id="loader" class="loader oculto">
+        <div class="spinner"></div>
+        <p>Cargando recetas deliciosas...</p>
+    </div>
 
-        <!-- Sección de recetas disponibles -->
-        <div class="seccion">
-            <h2>Recetas Disponibles</h2>
-            <div id="recetasDisponibles" class="recetas-disponibles">
-                <!-- Aca se van a mostrar las recetas con JavaScript -->
+    <!-- Botones de filtrado -->
+    <div class="filtros">
+        <button id="btnFiltrarTiempo">⏱️ Filtrar por Tiempo</button>
+        <button id="btnFiltrarIngrediente">🥬 Filtrar por Ingrediente</button>
+        <button id="btnMostrarTodas">📋 Mostrar Todas</button>
+    </div>
+
+    <!-- Formulario de filtro por tiempo -->
+    <div id="formFiltroTiempo" class="form-filtro oculto">
+        <div class="form-contenido">
+            <h3>⏱️ Filtrar por tiempo</h3>
+            <p>¿Cuántos minutos tenés disponibles?</p>
+            <div class="input-group">
+                <input 
+                    type="number" 
+                    id="inputTiempo" 
+                    placeholder="Ej: 30"
+                    min="1"
+                    class="input-filtro">
+                <span class="input-suffix">minutos</span>
+            </div>
+            <div class="form-botones">
+                <button id="btnAplicarTiempo" class="btn-aplicar">Buscar recetas</button>
+                <button id="btnCancelarTiempo" class="btn-cancelar">Cancelar</button>
             </div>
         </div>
+    </div>
 
-        <!-- Sección de recetas seleccionadas -->
-        <div class="seccion">
-            <h2>Mis Recetas Seleccionadas</h2>
-            <div class="recetas-seleccionadas">
-                <ul id="listaSeleccionadas" class="lista-seleccionadas">
-                    <!-- Aca se van a mostrar las recetas seleccionadas -->
-                </ul>
-                <div id="mensajeVacio" class="mensaje-vacio">
-                    No has seleccionado ninguna receta todavía 🍽️
-                </div>
-                <button id="btnLimpiarSeleccion" class="btn-limpiar oculto">
-                    🗑️ Limpiar Selección
-                </button>
+    <!-- Formulario de filtro por ingrediente -->
+    <div id="formFiltroIngrediente" class="form-filtro oculto">
+        <div class="form-contenido">
+            <h3>🥬 Filtrar por ingrediente</h3>
+            <p>¿Qué ingrediente tenés?</p>
+            <div class="input-group">
+                <input 
+                    type="text" 
+                    id="inputIngrediente" 
+                    placeholder="Ej: lentejas, papas, garbanzos"
+                    class="input-filtro">
             </div>
-            <!-- Resumen -->
-            <div id="resumen" class="resumen oculto">
-                <h3>Resumen</h3>
-                <div>
-                    <p>Total de recetas: <span id="totalRecetas">0</span></p>
-                    <div class="tiempo-total">
-                        <span id="tiempoTotal">0</span> minutos
-                    </div>
+            <div class="form-botones">
+                <button id="btnAplicarIngrediente" class="btn-aplicar">Buscar recetas</button>
+                <button id="btnCancelarIngrediente" class="btn-cancelar">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de recetas disponibles -->
+    <div class="seccion">
+        <h2>Recetas Disponibles</h2>
+        <div id="recetasDisponibles" class="recetas-disponibles">
+            <!-- Aquí se van a mostrar las recetas con JavaScript -->
+        </div>
+    </div>
+
+    <!-- Sección de recetas seleccionadas -->
+    <div class="seccion">
+        <h2>Mis Recetas Seleccionadas</h2>
+        <div class="recetas-seleccionadas">
+            <ul id="listaSeleccionadas" class="lista-seleccionadas">
+                <!-- Aquí se van a mostrar las recetas seleccionadas -->
+            </ul>
+            <div id="mensajeVacio" class="mensaje-vacio">
+                No has seleccionado ninguna receta todavía 🍽️
+            </div>
+            <button id="btnLimpiarSeleccion" class="btn-limpiar oculto">
+                🗑️ Limpiar Selección
+            </button>
+        </div>
+        
+        <!-- Resumen -->
+        <div id="resumen" class="resumen oculto">
+            <h3>📊 Resumen</h3>
+            <div>
+                <p>Total de recetas: <span id="totalRecetas">0</span></p>
+                <div class="tiempo-total">
+                    <span id="tiempoTotal">0</span> min
                 </div>
+                <p>¡Disfrutá cocinando! 🌱</p>
             </div>
         </div>
     </div>
     
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
+    
+    <!-- Script principal -->
     <script src="script.js"></script>
 </body>
 </html>

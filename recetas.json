@@ -1,0 +1,82 @@
+[
+    { 
+        "id": 1,
+        "nombre": "Hamburguesa de lentejas", 
+        "tiempo": 30, 
+        "ingredientes": ["lentejas", "cebolla", "ajo", "pan rallado"],
+        "dificultad": "Media", 
+        "vegano": true,
+        "imagen": "assets/hamburguesa-lentejas.jpg",
+        "descripcion": "Deliciosas hamburguesas vegetales con un toque especiado"
+    },
+    { 
+        "id": 2,
+        "nombre": "Pastel de papas", 
+        "tiempo": 45, 
+        "ingredientes": ["papas", "queso", "leche", "manteca"],
+        "dificultad": "Fácil", 
+        "vegano": false,
+        "imagen": "assets/pastel-de-papa.jpg",
+        "descripcion": "Clásico pastel de papas gratinado al horno"
+    },
+    { 
+        "id": 3,
+        "nombre": "Hummus de garbanzos", 
+        "tiempo": 15, 
+        "ingredientes": ["garbanzos", "tahini", "limón", "ajo"],
+        "dificultad": "Fácil", 
+        "vegano": true,
+        "imagen": "assets/hummus.jpg",
+        "descripcion": "Cremoso hummus tradicional para acompañar"
+    },
+    { 
+        "id": 4,
+        "nombre": "Empanadas de soja", 
+        "tiempo": 45, 
+        "ingredientes": ["soja texturizada", "tapas de empanada", "cebolla", "ajo"],
+        "dificultad": "Fácil", 
+        "vegano": true,
+        "imagen": "assets/empanadas.jpg",
+        "descripcion": "Empanadas jugosas rellenas de soja texturizada"
+    },
+    { 
+        "id": 5,
+        "nombre": "Tortilla de papas", 
+        "tiempo": 35, 
+        "ingredientes": ["papas", "huevos", "cebolla", "queso"],
+        "dificultad": "Fácil", 
+        "vegano": false,
+        "imagen": "assets/tortilla-papas.jpg",
+        "descripcion": "Clásica tortilla española vegetariana"
+    },
+    { 
+        "id": 6,
+        "nombre": "Curry de verduras", 
+        "tiempo": 40, 
+        "ingredientes": ["curry", "leche de coco", "verduras mixtas", "arroz"],
+        "dificultad": "Media", 
+        "vegano": true,
+        "imagen": "assets/curry.jpg",
+        "descripcion": "Curry aromático con leche de coco y especias"
+    },
+    { 
+        "id": 7,
+        "nombre": "Ensalada de quinoa", 
+        "tiempo": 20, 
+        "ingredientes": ["quinoa", "tomate", "pepino", "limón"],
+        "dificultad": "Fácil", 
+        "vegano": true,
+        "imagen": "assets/quinoa.jpg",
+        "descripcion": "Ensalada fresca y nutritiva con quinoa"
+    },
+    { 
+        "id": 8,
+        "nombre": "Pizza vegetariana", 
+        "tiempo": 50, 
+        "ingredientes": ["masa de pizza", "mozzarella", "vegetales", "salsa de tomate"],
+        "dificultad": "Media", 
+        "vegano": false,
+        "imagen": "assets/pizza.jpg",
+        "descripcion": "Pizza casera con verduras frescas de estación"
+    }
+]
