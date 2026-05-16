@@ -1,65 +1,78 @@
-//CONSTANTES Y VARIABLES
-const recetas = [
-    { 
-        nombre: "Hamburguesa de lentejas", 
-        tiempo: 30, 
-        ingredientes: ["lentejas", "cebolla", "ajo", "pan rallado"],
-        dificultad: "Media", 
-        vegano: true,
-        imagen: "assets/hamburguesa-lentejas.jpg"
-    },
-    { 
-        nombre: "Pastel de papas", 
-        tiempo: 45, 
-        ingredientes: ["papas", "queso", "leche", "manteca"],
-        dificultad: "Fácil", 
-        vegano: false,
-        imagen: "assets/pastel-de-papa.jpg"
-    },
-    { 
-        nombre: "Hummus de garbanzos", 
-        tiempo: 15, 
-        ingredientes: ["garbanzos", "tahini", "limón", "ajo"],
-        dificultad: "Fácil", 
-        vegano: true,
-        imagen: "assets/hummus.jpg"
-    },
-    { 
-        nombre: "Empanadas de soja", 
-        tiempo: 45, 
-        ingredientes: ["soja texturizada", "tapas de empanada", "cebolla", "ajo"],
-        dificultad: "Fácil", 
-        vegano: true,
-        imagen: "assets/empanadas.jpg"
-    },
-    { 
-        nombre: "Tortilla de papas", 
-        tiempo: 35, 
-        ingredientes: ["papas", "huevos", "cebolla", "queso"],
-        dificultad: "Fácil", 
-        vegano: false,
-        imagen: "assets/tortilla-papas.jpg"
-    }
-];
-
+// ========== VARIABLES GLOBALES ==========
+let recetas = [];
 let recetasSeleccionadas = [];
 let nombreUsuario = "";
-let recetasActuales = [...recetas];
+let recetasActuales = [];
 
 // ========== FUNCIONES ==========
 
 // Función: Iniciar aplicación
-function iniciarApp() {
+async function iniciarApp() {
     verificarNombreGuardado();
     configurarNombre();
+    await cargarRecetasDesdeJSON();
     cargarRecetasGuardadas();
-    mostrarRecetas(recetas);
     configurarEventos();
+}
+
+// Función: Cargar recetas desde archivo JSON
+async function cargarRecetasDesdeJSON() {
+    const loader = document.getElementById("loader");
+    
+    try {
+        // Mostrar loader
+        loader.classList.remove("oculto");
+        
+        // Simular un pequeño delay para mostrar el loader (opcional)
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Cargar archivo JSON
+        const response = await fetch('recetas.json');
+        
+        if (!response.ok) {
+            throw new Error('Error al cargar las recetas');
+        }
+        
+        recetas = await response.json();
+        recetasActuales = [...recetas];
+        
+        // Mostrar recetas
+        mostrarRecetas(recetas);
+        
+        // Ocultar loader
+        loader.classList.add("oculto");
+        
+        // Notificación de éxito
+        Swal.fire({
+            icon: 'success',
+            title: '¡Recetas cargadas!',
+            text: `Se cargaron ${recetas.length} recetas disponibles`,
+            timer: 2000,
+            showConfirmButton: false,
+            toast: true,
+            position: 'top-end'
+        });
+        
+    } catch (error) {
+        loader.classList.add("oculto");
+        
+        Swal.fire({
+            icon: 'error',
+            title: 'Error al cargar recetas',
+            text: 'No se pudieron cargar las recetas. Por favor, recargá la página.',
+            confirmButtonText: 'Recargar',
+            confirmButtonColor: '#854632'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                location.reload();
+            }
+        });
+    }
 }
 
 // Función: Verificar si hay nombre guardado
 function verificarNombreGuardado() {
-    let nombreGuardado = localStorage.getItem("nombreUsuario");
+    const nombreGuardado = localStorage.getItem("nombreUsuario");
     
     if (nombreGuardado) {
         nombreUsuario = nombreGuardado;
@@ -71,22 +84,26 @@ function verificarNombreGuardado() {
 
 // Función: Configurar evento del nombre
 function configurarNombre() {
-    let btnGuardar = document.getElementById("btnGuardarNombre");
-    let inputNombre = document.getElementById("inputNombre");
+    const btnGuardar = document.getElementById("btnGuardarNombre");
+    const inputNombre = document.getElementById("inputNombre");
     
     // Permitir enviar con Enter
-    inputNombre.addEventListener("keypress", function(e) {
+    inputNombre.addEventListener("keypress", (e) => {
         if (e.key === "Enter") {
             btnGuardar.click();
         }
     });
     
-    btnGuardar.addEventListener("click", function() {
+    btnGuardar.addEventListener("click", () => {
         nombreUsuario = inputNombre.value.trim();
         
         if (nombreUsuario === "") {
-            inputNombre.style.borderColor = "#e53935";
-            inputNombre.placeholder = "¡No olvides tu nombre!";
+            Swal.fire({
+                icon: 'warning',
+                title: '¡Ups!',
+                text: 'Por favor, ingresá tu nombre para continuar',
+                confirmButtonColor: '#854632'
+            });
             return;
         }
         
@@ -97,6 +114,15 @@ function configurarNombre() {
         
         // Guardar en localStorage
         localStorage.setItem("nombreUsuario", nombreUsuario);
+        
+        // Notificación de bienvenida
+        Swal.fire({
+            icon: 'success',
+            title: `¡Bienvenido/a, ${nombreUsuario}! 🌱`,
+            text: 'Explorá nuestras deliciosas recetas vegetarianas',
+            timer: 2500,
+            showConfirmButton: false
+        });
     });
 }
 
@@ -117,27 +143,27 @@ function configurarEventos() {
     document.getElementById("btnCancelarIngrediente").addEventListener("click", cerrarFormularioIngrediente);
     
     // Permitir enviar con Enter
-    document.getElementById("inputTiempo").addEventListener("keypress", function(e) {
+    document.getElementById("inputTiempo").addEventListener("keypress", (e) => {
         if (e.key === "Enter") {
             aplicarFiltroTiempo();
         }
     });
     
-    document.getElementById("inputIngrediente").addEventListener("keypress", function(e) {
+    document.getElementById("inputIngrediente").addEventListener("keypress", (e) => {
         if (e.key === "Enter") {
             aplicarFiltroIngrediente();
         }
     });
     
     // Cerrar formularios al hacer click fuera
-    document.getElementById("formFiltroTiempo").addEventListener("click", function(e) {
-        if (e.target === this) {
+    document.getElementById("formFiltroTiempo").addEventListener("click", (e) => {
+        if (e.target === e.currentTarget) {
             cerrarFormularioTiempo();
         }
     });
     
-    document.getElementById("formFiltroIngrediente").addEventListener("click", function(e) {
-        if (e.target === this) {
+    document.getElementById("formFiltroIngrediente").addEventListener("click", (e) => {
+        if (e.target === e.currentTarget) {
             cerrarFormularioIngrediente();
         }
     });
@@ -157,36 +183,43 @@ function cerrarFormularioTiempo() {
 
 // Función: Aplicar filtro por tiempo
 function aplicarFiltroTiempo() {
-    let inputTiempo = document.getElementById("inputTiempo");
-    let tiempo = +inputTiempo.value;
+    const inputTiempo = document.getElementById("inputTiempo");
+    const tiempo = Number(inputTiempo.value);
     
     if (isNaN(tiempo) || tiempo <= 0) {
-        inputTiempo.style.borderColor = "#e53935";
-        inputTiempo.placeholder = "¡Ingresá un número válido!";
+        Swal.fire({
+            icon: 'error',
+            title: 'Número inválido',
+            text: 'Por favor, ingresá un tiempo válido en minutos',
+            confirmButtonColor: '#854632'
+        });
         return;
     }
     
-    let recetasFiltradas = [];
-    
-    for (let i = 0; i < recetas.length; i++) {
-        if (recetas[i].tiempo <= tiempo) {
-            recetasFiltradas.push(recetas[i]);
-        }
-    }
+    const recetasFiltradas = recetas.filter(receta => receta.tiempo <= tiempo);
     
     if (recetasFiltradas.length === 0) {
-        inputTiempo.style.borderColor = "#ff9800";
-        inputTiempo.value = "";
-        inputTiempo.placeholder = "No hay recetas en " + tiempo + " min";
-        setTimeout(function() {
-            inputTiempo.placeholder = "Ej: 30";
-            inputTiempo.style.borderColor = "";
-        }, 2000);
+        Swal.fire({
+            icon: 'info',
+            title: 'No hay recetas disponibles',
+            text: `No encontramos recetas que se puedan preparar en ${tiempo} minutos o menos`,
+            confirmButtonColor: '#854632'
+        });
         return;
     }
     
     mostrarRecetas(recetasFiltradas);
     cerrarFormularioTiempo();
+    
+    Swal.fire({
+        icon: 'success',
+        title: '¡Filtro aplicado!',
+        text: `Encontramos ${recetasFiltradas.length} receta(s) de hasta ${tiempo} minutos`,
+        timer: 2000,
+        showConfirmButton: false,
+        toast: true,
+        position: 'top-end'
+    });
 }
 
 // Función: Mostrar formulario de ingrediente
@@ -203,44 +236,52 @@ function cerrarFormularioIngrediente() {
 
 // Función: Aplicar filtro por ingrediente
 function aplicarFiltroIngrediente() {
-    let inputIngrediente = document.getElementById("inputIngrediente");
-    let ingrediente = inputIngrediente.value.trim().toLowerCase();
+    const inputIngrediente = document.getElementById("inputIngrediente");
+    const ingrediente = inputIngrediente.value.trim().toLowerCase();
     
     if (ingrediente === "") {
-        inputIngrediente.style.borderColor = "#e53935";
-        inputIngrediente.placeholder = "¡Ingresá un ingrediente!";
+        Swal.fire({
+            icon: 'warning',
+            title: '¡Ups!',
+            text: 'Por favor, ingresá un ingrediente para buscar',
+            confirmButtonColor: '#854632'
+        });
         return;
     }
     
-    let recetasFiltradas = [];
-    
-    for (let i = 0; i < recetas.length; i++) {
-        for (let j = 0; j < recetas[i].ingredientes.length; j++) {
-            if (recetas[i].ingredientes[j].toLowerCase().includes(ingrediente)) {
-                recetasFiltradas.push(recetas[i]);
-                break;
-            }
-        }
-    }
+    const recetasFiltradas = recetas.filter(receta => 
+        receta.ingredientes.some(ing => 
+            ing.toLowerCase().includes(ingrediente)
+        )
+    );
     
     if (recetasFiltradas.length === 0) {
-        inputIngrediente.style.borderColor = "#ff9800";
-        inputIngrediente.value = "";
-        inputIngrediente.placeholder = "No hay recetas con " + ingrediente;
-        setTimeout(function() {
-            inputIngrediente.placeholder = "Ej: lentejas, papas, garbanzos";
-            inputIngrediente.style.borderColor = "";
-        }, 2000);
+        Swal.fire({
+            icon: 'info',
+            title: 'No hay recetas disponibles',
+            text: `No encontramos recetas con "${ingrediente}"`,
+            confirmButtonColor: '#854632'
+        });
         return;
     }
     
     mostrarRecetas(recetasFiltradas);
     cerrarFormularioIngrediente();
+    
+    Swal.fire({
+        icon: 'success',
+        title: '¡Filtro aplicado!',
+        text: `Encontramos ${recetasFiltradas.length} receta(s) con ${ingrediente}`,
+        timer: 2000,
+        showConfirmButton: false,
+        toast: true,
+        position: 'top-end'
+    });
 }
 
 // Función: Mostrar recetas en el HTML
 function mostrarRecetas(listadoRecetas) {
-    let contenedor = document.getElementById("recetasDisponibles");
+    const contenedor = document.getElementById("recetasDisponibles");
     contenedor.innerHTML = "";
     
     recetasActuales = listadoRecetas;
@@ -250,17 +291,15 @@ function mostrarRecetas(listadoRecetas) {
         return;
     }
     
-    for (let i = 0; i < listadoRecetas.length; i++) {
-        let receta = listadoRecetas[i];
-        
+    listadoRecetas.forEach((receta, index) => {
         // Verificar si ya está seleccionada
-        let yaSeleccionada = recetasSeleccionadas.some(r => r.nombre === receta.nombre);
+        const yaSeleccionada = recetasSeleccionadas.some(r => r.id === receta.id);
         
-        let card = document.createElement("div");
+        const card = document.createElement("div");
         card.className = "receta-card";
         
         // Si tiene imagen, mostrarla
-        let imagenHTML = receta.imagen ? 
+        const imagenHTML = receta.imagen ? 
             `<img src="${receta.imagen}" alt="${receta.nombre}" class="receta-imagen" onerror="this.style.display='none'">` 
             : '';
         
@@ -268,8 +307,9 @@ function mostrarRecetas(listadoRecetas) {
             ${imagenHTML}
             <div class="receta-contenido">
                 <h3>${receta.nombre}</h3>
+                <p class="receta-descripcion">${receta.descripcion || ''}</p>
                 <div class="receta-info">
-                    <span>⏱️ ${receta.tiempo} minutos</span>
+                    <span>⏱️ ${receta.tiempo} min</span>
                     <span>📊 ${receta.dificultad}</span>
                     <span class="badge ${receta.vegano ? 'vegano' : 'no-vegano'}">
                         ${receta.vegano ? '🌱 Vegano' : '🥚 Vegetariano'}
@@ -277,7 +317,7 @@ function mostrarRecetas(listadoRecetas) {
                 </div>
                 <button 
                     class="btn-agregar" 
-                    onclick="agregarReceta(${i})"
+                    onclick="agregarReceta(${index})"
                     ${yaSeleccionada ? 'disabled' : ''}>
                     ${yaSeleccionada ? '✓ Ya agregada' : '+ Agregar'}
                 </button>
@@ -285,38 +325,72 @@ function mostrarRecetas(listadoRecetas) {
         `;
         
         contenedor.appendChild(card);
-    }
+    });
 }
 
 // Función: Agregar receta a la selección
 function agregarReceta(indice) {
-    let receta = recetasActuales[indice];
+    const receta = recetasActuales[indice];
     
     // Verificar que no esté ya seleccionada
-    let yaEsta = recetasSeleccionadas.some(r => r.nombre === receta.nombre);
+    const yaEsta = recetasSeleccionadas.some(r => r.id === receta.id);
     
     if (!yaEsta) {
         recetasSeleccionadas.push(receta);
         guardarEnLocalStorage();
         mostrarRecetasSeleccionadas();
-        mostrarRecetas(recetasActuales); // Refrescar para deshabilitar botón
+        mostrarRecetas(recetasActuales);
+        
+        Swal.fire({
+            icon: 'success',
+            title: '¡Receta agregada!',
+            text: `${receta.nombre} fue agregada a tu lista`,
+            timer: 1500,
+            showConfirmButton: false,
+            toast: true,
+            position: 'top-end'
+        });
     }
 }
 
 // Función: Eliminar receta de la selección
 function eliminarReceta(indice) {
-    recetasSeleccionadas.splice(indice, 1);
-    guardarEnLocalStorage();
-    mostrarRecetasSeleccionadas();
-    mostrarRecetas(recetasActuales); // Refrescar botones
+    const receta = recetasSeleccionadas[indice];
+    
+    Swal.fire({
+        title: '¿Eliminar receta?',
+        text: `¿Querés eliminar "${receta.nombre}" de tu selección?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#854632',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            recetasSeleccionadas.splice(indice, 1);
+            guardarEnLocalStorage();
+            mostrarRecetasSeleccionadas();
+            mostrarRecetas(recetasActuales);
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'Receta eliminada',
+                timer: 1500,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end'
+            });
+        }
+    });
 }
 
 // Función: Mostrar recetas seleccionadas
 function mostrarRecetasSeleccionadas() {
-    let lista = document.getElementById("listaSeleccionadas");
-    let mensajeVacio = document.getElementById("mensajeVacio");
-    let resumen = document.getElementById("resumen");
-    let btnLimpiar = document.getElementById("btnLimpiarSeleccion");
+    const lista = document.getElementById("listaSeleccionadas");
+    const mensajeVacio = document.getElementById("mensajeVacio");
+    const resumen = document.getElementById("resumen");
+    const btnLimpiar = document.getElementById("btnLimpiarSeleccion");
     
     lista.innerHTML = "";
     
@@ -333,23 +407,22 @@ function mostrarRecetasSeleccionadas() {
     
     let tiempoTotal = 0;
     
-    for (let i = 0; i < recetasSeleccionadas.length; i++) {
-        let receta = recetasSeleccionadas[i];
+    recetasSeleccionadas.forEach((receta, index) => {
         tiempoTotal += receta.tiempo;
         
-        let li = document.createElement("li");
+        const li = document.createElement("li");
         li.innerHTML = `
             <div>
                 <strong>${receta.nombre}</strong>
                 <span style="color: #666;"> - ${receta.tiempo} min</span>
             </div>
-            <button class="btn-eliminar" onclick="eliminarReceta(${i})">
+            <button class="btn-eliminar" onclick="eliminarReceta(${index})">
                 ❌ Eliminar
             </button>
         `;
         
         lista.appendChild(li);
-    }
+    });
     
     document.getElementById("totalRecetas").textContent = recetasSeleccionadas.length;
     document.getElementById("tiempoTotal").textContent = tiempoTotal;
@@ -358,19 +431,45 @@ function mostrarRecetasSeleccionadas() {
 // Función: Mostrar todas las recetas
 function mostrarTodas() {
     mostrarRecetas(recetas);
+    
+    Swal.fire({
+        icon: 'info',
+        title: 'Mostrando todas las recetas',
+        text: `${recetas.length} recetas disponibles`,
+        timer: 1500,
+        showConfirmButton: false,
+        toast: true,
+        position: 'top-end'
+    });
 }
 
 // Función: Limpiar selección
 function limpiarSeleccion() {
-    // Crear confirmación personalizada en vez de confirm()
-    let confirmar = true; // Por ahora dejamos true, pero podrías hacer un modal personalizado
-    
-    if (confirmar) {
-        recetasSeleccionadas = [];
-        guardarEnLocalStorage();
-        mostrarRecetasSeleccionadas();
-        mostrarRecetas(recetasActuales);
-    }
+    Swal.fire({
+        title: '¿Limpiar toda la selección?',
+        text: 'Se eliminarán todas las recetas seleccionadas',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, limpiar todo',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            recetasSeleccionadas = [];
+            guardarEnLocalStorage();
+            mostrarRecetasSeleccionadas();
+            mostrarRecetas(recetasActuales);
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'Selección limpiada',
+                text: 'Todas las recetas fueron eliminadas',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+    });
 }
 
 // Función: Guardar en LocalStorage
@@ -380,7 +479,7 @@ function guardarEnLocalStorage() {
 
 // Función: Cargar desde LocalStorage
 function cargarRecetasGuardadas() {
-    let guardadas = localStorage.getItem("recetasSeleccionadas");
+    const guardadas = localStorage.getItem("recetasSeleccionadas");
     
     if (guardadas) {
         recetasSeleccionadas = JSON.parse(guardadas);
